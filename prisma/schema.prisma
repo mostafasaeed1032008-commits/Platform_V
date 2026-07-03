@@ -1,0 +1,133 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(uuid())
+  name          String
+  email         String   @unique
+  password_hash String
+  role          String   // "teacher" or "student"
+  created_at    String   // ISO string
+
+  // Relationships
+  courses       Course[]            @relation("TeacherCourses")
+  enrollments   Enrollment[]        @relation("StudentEnrollments")
+  quiz_attempts QuizAttempt[]       @relation("StudentQuizAttempts")
+  transactions  WalletTransaction[] @relation("StudentTransactions")
+}
+
+model Course {
+  id              String   @id @default(uuid())
+  title           String
+  description     String
+  cover_image_url String?
+  price_points    Int      @default(0)
+  created_at      String   // ISO string
+  teacher_id      String
+
+  // Relationships
+  teacher         User         @relation("TeacherCourses", fields: [teacher_id], references: [id], onDelete: Cascade)
+  lessons         Lesson[]     @relation("CourseLessons")
+  quizzes         Quiz[]       @relation("CourseQuizzes")
+  enrollments     Enrollment[] @relation("CourseEnrollments")
+}
+
+model Lesson {
+  id              String   @id @default(uuid())
+  course_id       String
+  title           String
+  video_provider  String   @default("url") // "url", "youtube", "vimeo", "vdocipher"
+  video_id_or_url String
+  notes           String?
+  attached_files  String?  // JSON string
+  order_index     Int      @default(0)
+  created_at      String   // ISO string
+
+  // Relationships
+  course          Course   @relation("CourseLessons", fields: [course_id], references: [id], onDelete: Cascade)
+}
+
+model Quiz {
+  id               String   @id @default(uuid())
+  course_id        String?
+  title            String
+  duration_minutes Int      @default(30)
+  questions        String   // JSON string containing array of questions
+  created_at       String   // ISO string
+
+  // Relationships
+  course           Course?       @relation("CourseQuizzes", fields: [course_id], references: [id], onDelete: Cascade)
+  attempts         QuizAttempt[] @relation("QuizAttempts")
+}
+
+model WalletTransaction {
+  id               String   @id @default(uuid())
+  student_id       String
+  student_name     String
+  student_email    String
+  type             String   // "topup_pending", "topup_approved", "topup_rejected", "course_purchase"
+  points_amount    Int
+  reference_note   String
+  rejection_reason String?
+  created_at       String   // ISO string
+  approved_at      String?  // ISO string
+  approved_by      String?
+
+  // Relationships
+  student          User     @relation("StudentTransactions", fields: [student_id], references: [id], onDelete: Cascade)
+}
+
+model Enrollment {
+  id         String   @id @default(uuid())
+  student_id String
+  course_id  String
+  created_at String   // ISO string
+
+  // Relationships
+  student    User     @relation("StudentEnrollments", fields: [student_id], references: [id], onDelete: Cascade)
+  course     Course   @relation("CourseEnrollments", fields: [course_id], references: [id], onDelete: Cascade)
+}
+
+model QuizAttempt {
+  id              String   @id @default(uuid())
+  student_id      String
+  student_name    String
+  student_email   String
+  quiz_id         String
+  quiz_title      String
+  course_id       String?
+  score           Int
+  total_questions Int
+  answers         String   // JSON string containing chosen indices array
+  created_at      String   // ISO string
+
+  // Relationships
+  student         User     @relation("StudentQuizAttempts", fields: [student_id], references: [id], onDelete: Cascade)
+  quiz            Quiz     @relation("QuizAttempts", fields: [quiz_id], references: [id], onDelete: Cascade)
+}
+
+model LessonProgress {
+  id           String   @id @default(uuid())
+  student_id   String
+  lesson_id    String
+  completed_at String   // ISO string
+
+  @@unique([student_id, lesson_id])
+}
+
+model Certificate {
+  id               String   @id @default(uuid())
+  student_id       String
+  course_id        String
+  issued_at        String   // ISO string
+  certificate_code String   @unique
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Integrated Teacher Platform",
+  "description": "A comprehensive full-stack education platform for teachers to publish video courses and quizzes with an integrated wallet transaction point system.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

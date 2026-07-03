@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap');
+@import "tailwindcss";
+
+:root {
+  --primary: #4f46e5; /* Sleek Indigo */
+  --primary-hover: #4338ca;
+  --bg-main: #f8fafc; /* Sleek Slate 50 */
+  --bg-card: #ffffff; /* Pure White */
+  --border: #e2e8f0; /* Sleek Slate 200 */
+  --border-focus: #cbd5e1; /* Slate 300 */
+  --text-main: #0f172a; /* Sleek Slate 900 */
+  --text-muted: #64748b; /* Sleek Slate 500 */
+  --font-family-sans: "Inter", sans-serif;
+  --font-family-display: "Outfit", "Inter", sans-serif;
+}
+
+@theme {
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-bg-main: var(--bg-main);
+  --color-bg-card: var(--bg-card);
+  --color-border: var(--border);
+  --color-text-main: var(--text-main);
+  --color-text-muted: var(--text-muted);
+  --font-sans: var(--font-family-sans);
+  --font-display: var(--font-family-display);
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: var(--font-family-sans);
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--text-muted);
+  border-radius: 3px;
+}
