@@ -8,3 +8,17 @@ coverage/
 !.env.example
 
 /src/generated/prisma
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+
+# Local database
+prisma/dev.db
+
+# Uploaded videos
+storage/videos/
+
+# Logs
+*.log
